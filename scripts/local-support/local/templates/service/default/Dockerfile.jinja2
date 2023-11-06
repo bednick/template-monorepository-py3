@@ -1,0 +1,29 @@
+﻿# RUN BULD ONLY ROOT PROJECT!!!
+# docker build -t {{ project_name }} -f ./services/{{ project_name }}/Dockerfile .
+
+FROM python:3.9-bookworm AS builder
+
+WORKDIR /usr/src
+
+COPY ./requirements.txt /usr/src/requirements.txt
+RUN python3 -m pip install wheel==0.37.1 && \
+    python3 -m pip wheel -r ./requirements.txt -w ./wheels
+
+COPY ./libraries /usr/src/libraries
+COPY ./scripts/local-support /usr/src/scripts/local-support
+RUN python3 -m pip install -e /usr/src/scripts/local-support && \
+    python3 -m local.build_libraries
+
+COPY ./services/{{ project_name }} /usr/src/services/{{ project_name }}
+RUN python3 -m pip wheel --no-index --find-links ./wheels -w ./services/{{ project_name }}/dist -e ./services/{{ project_name }}
+
+
+FROM python:3.9-slim-bookworm
+
+WORKDIR /usr/app
+
+COPY --from=builder /usr/src/services/{{ project_name }}/dist /usr/app/lib
+
+RUN python3 -m pip --no-cache-dir install --progress-bar off --no-index --find-links=/usr/app/lib {{ project_name }}
+
+ENTRYPOINT ["uvicorn", "{{ module_name }}.application:app", "--host", "0.0.0.0", "--port", "8080"]

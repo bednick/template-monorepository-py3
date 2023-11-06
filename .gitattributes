@@ -1,0 +1,36 @@
+* text=auto eol=lf
+
+# Source files
+*.pxd    text diff=python
+*.py     text diff=python
+*.py3    text diff=python
+*.pyw    text diff=python
+*.pyx    text diff=python
+*.pyz    text diff=python
+*.pyi    text diff=python
+
+# Binary files
+*.db     binary
+*.p      binary
+*.pkl    binary
+*.pickle binary
+*.pyc    binary export-ignore
+*.pyo    binary export-ignore
+*.pyd    binary
+*.whl    binary
+
+# Jupyter notebook
+*.ipynb  text
+
+# Linux Shell
+*.sh     text eol=lf
+
+# Microsoft Shell
+*.msh      text eol=crlf
+*.msh1     text eol=crlf
+*.msh2     text eol=crlf
+*.mshxml   text eol=crlf
+*.msh1xml  text eol=crlf
+*.msh2xml  text eol=crlf
+*.mcf      text eol=crlf
+*.ps1      text eol=crlf
