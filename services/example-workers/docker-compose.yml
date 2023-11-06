@@ -1,0 +1,19 @@
+# docker-compose --project-directory ./ -f ./services/example-workers/docker-compose.yml up
+version: "2.1"
+services:
+  example-worker:
+    image: example-workers
+    build:
+      context: .
+      dockerfile: ./services/example-workers/Dockerfile
+    environment:
+      - DATABASE_POSTGRESQL_HOSTS=["postgresql"]
+      - DATABASE_POSTGRESQL_USERNAME=postgres
+      - DATABASE_POSTGRESQL_PASSWORD=postgres
+      - DATABASE_POSTGRESQL_DATABASE_NAME=postgres
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_LOGIN=guest
+      - RABBITMQ_PASSWORD=guest
+      - RABBITMQ_QUEUE=demo
+      - SKIP_WORKERS=["example-workers-cron"]

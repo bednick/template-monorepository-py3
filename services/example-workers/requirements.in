@@ -1,0 +1,9 @@
+fastapi==0.110.0
+prometheus-client==0.20.0
+pydantic==2.6.4
+pydantic-settings==2.2.1
+python-dotenv==1.0.1
+starlette==0.36.3
+starlette-exporter==0.21.0
+urllib3==2.2.1
+uvicorn==0.29.0

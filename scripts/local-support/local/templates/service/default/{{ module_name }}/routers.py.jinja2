@@ -1,0 +1,8 @@
+import fastapi
+
+from {{ module_name }} import api
+
+app = fastapi.FastAPI(title="{{ project_name }}")
+
+app.include_router(api.ping.router)
+app.include_router(api.root.router)
