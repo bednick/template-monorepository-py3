@@ -50,7 +50,7 @@ def run(project_name: str, app_template: str, format_: str, filename: str) -> Op
     sys.path.append(str(project_dir.resolve()))
     module_name = utils.gen_module_name(project_name)
     app = app_template.format(module_name=module_name)
-    module, application = app.split(":")
+    module, application = app.split(":", maxsplit=1)
 
     try:
         fastapi_app = getattr(__import__(module, fromlist=[module]), application)

@@ -8,5 +8,5 @@ python-dotenv==1.0.1
 python-json-logger==2.0.7
 starlette==0.36.3
 starlette-exporter==0.21.0
-urllib3==2.2.1
+urllib3==2.2.2
 uvicorn==0.29.0

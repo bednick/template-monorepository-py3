@@ -47,7 +47,7 @@ def run(service_name: str, filename: str):
     checked_libraries = set()
     need_check_libraries = list(service_editable)
     while need_check_libraries:
-        library_name = need_check_libraries.pop().split("[")[0]
+        library_name = need_check_libraries.pop().split("[", maxsplit=1)[0]
         if library_name in checked_libraries:
             continue
         checked_libraries.add(library_name)
@@ -61,7 +61,7 @@ def run(service_name: str, filename: str):
 
     print(f"Update file {service_dir / filename}")
     with open(service_dir / filename, "w", encoding="utf-8", newline="\n") as fp:
-        fp.write("\n".join(sorted(service_requirements)))
+        fp.write("\n".join(sorted(service_requirements, key=lambda line: line.split("=", maxsplit=1)[0])))
         fp.write("\n")
 
 

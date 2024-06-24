@@ -12,6 +12,6 @@ python-json-logger==2.0.7
 sqlalchemy==2.0.29
 starlette==0.36.3
 starlette-exporter==0.21.0
-urllib3==2.2.1
+urllib3==2.2.2
 uvicorn==0.29.0
 yarl==1.9.4

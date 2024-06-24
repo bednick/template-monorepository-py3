@@ -10,7 +10,7 @@ def parse_requirements(filename: pathlib.Path) -> Set[str]:
     if not filename.is_file():
         return results
     for line in filename.read_text("utf-8").split("\n"):
-        line = line.split("#")[0].strip().lower()
+        line = line.split("#", maxsplit=1)[0].strip().lower()
         if line:
             results.add(line)
     return results
