@@ -21,7 +21,7 @@ def install(prefix: str) -> int:
 
 
 def run(install_type: Literal["libraries", "services"]) -> bool:
-    print(f'Install  "{install_type}" ...')
+    print(f'Install "{install_type}" ...')
     return not bool(install(f"./{install_type}"))
 
 

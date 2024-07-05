@@ -1,5 +1,7 @@
 """
+local.docs example-service
 local.docs example-service example-workers
+local.docs __all__
 """
 
 import argparse
@@ -41,6 +43,7 @@ DESERIALIZERS = {
 
 
 def run(project_name: str, app_template: str, format_: str, filename: str) -> Optional[str]:
+    project_name = utils.clear_project_name(project_name)
     project_dir = pathlib.Path(f"./services/{project_name}")
 
     if not project_dir.is_dir():
@@ -101,26 +104,42 @@ def configure_parser(parser: argparse.ArgumentParser) -> argparse.ArgumentParser
     return parser
 
 
+def _exec(project_name: str, app_template: str, format_: str, filename: str) -> int:
+    try:
+        new_docs_filename = run(project_name, app_template, format_, filename)
+        if new_docs_filename:
+            print(f"{project_name} service write docs file: {new_docs_filename}")
+        else:
+            print(f"{project_name} service documentation up-to-date, skip generate docs")
+    except Exception as exc:
+        print(exc, file=sys.stderr)
+        return 1
+    return 0
+
+
 def main():
     parser = configure_parser(argparse.ArgumentParser(description="Gen service docs"))
     args = parser.parse_args()
-
-    error_count = 0
-    for project_name in args.project_names:
-        try:
-            new_docs_filename = run(
+    if "__all__" in args.project_names:
+        error_count = sum(
+            _exec(
+                project_name=service.name,
+                app_template=args.app_template,
+                format_=args.format,
+                filename=args.filename,
+            )
+            for service in pathlib.Path("services").glob("*")
+        )
+    else:
+        error_count = sum(
+            _exec(
                 project_name=project_name,
                 app_template=args.app_template,
                 format_=args.format,
                 filename=args.filename,
             )
-            if new_docs_filename:
-                print(f"{project_name} service write docs file: {new_docs_filename}")
-            else:
-                print(f"{project_name} service documentation up-to-date, skip generate docs")
-        except NotGenDocs as exc:
-            print(exc, file=sys.stderr)
-            error_count += 1
+            for project_name in args.project_names
+        )
     exit(error_count)
 
 

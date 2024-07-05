@@ -1,6 +1,5 @@
 """
 local.requirements example-service
-
 local.requirements __all__
 """
 
@@ -80,7 +79,6 @@ def configure_parser(parser: argparse.ArgumentParser) -> argparse.ArgumentParser
 def main():
     parser = configure_parser(argparse.ArgumentParser(description="Gen service requirements.txt"))
     args = parser.parse_args()
-
     try:
         if args.service_name == "__all__":
             for service in pathlib.Path("services").glob("*"):
@@ -89,7 +87,7 @@ def main():
             run(service_name=args.service_name, filename=args.filename)
         exit(0)
     except NotGenRequirements as exc:
-        print(exc, file=sys.stderr)
+        print(f"Error generate requirements: {exc}", file=sys.stderr)
         exit(1)
 
 
