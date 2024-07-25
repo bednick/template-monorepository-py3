@@ -1,10 +1,10 @@
 import functools
 import json
 import logging
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 
 import pydantic.json
-from sqlalchemy import text
+from sqlalchemy import Executable, text
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -71,7 +71,11 @@ class Storage:
 
     @with_session
     async def execute(
-        self, statement, parameters: Optional[Dict[str, Any]] = None, *, session: AsyncSession = ...
+        self,
+        statement: Union[Executable, str],
+        parameters: Optional[Dict[str, Any]] = None,
+        *,
+        session: AsyncSession = ...,
     ) -> Any:
         if isinstance(statement, str):
             statement = text(statement)
