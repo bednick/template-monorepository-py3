@@ -16,6 +16,8 @@ line_length = 120
 
 [tool.mypy]
 python_version = "3.9"
+warn_unused_configs = true
+files = ["libraries", "scripts", "services"]
 exclude = [ "setup\\.py$",]
 ignore_missing_imports = true
 strict_optional = true
