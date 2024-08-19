@@ -19,4 +19,4 @@ WORKDIR /usr/app
 
 COPY ./scripts/internal /usr/app/scripts
 
-ENTRYPOINT ["uvicorn", "{{module_name}}.asgi:app", "--host", "0.0.0.0", "--port", "8080", "--no-access-log", "--proxy-headers"]
+ENTRYPOINT ["uvicorn", "{{ module_name }}.asgi:app", "--host", "0.0.0.0", "--port", "8080", "--no-access-log", "--proxy-headers"]
