@@ -98,7 +98,7 @@ def app_template_regex_type(arg_value, pat=re.compile(r"^{module_name}.[_a-zA-Z]
 
 def configure_parser(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
     parser.add_argument("project_names", nargs="+", default=[], help="services names")
-    parser.add_argument("--app-template", default="{module_name}.routers:app", type=app_template_regex_type)
+    parser.add_argument("--app-template", default="{module_name}.asgi:app", type=app_template_regex_type)
     parser.add_argument("--format", default="yaml", type=str, choices=list(SERIALIZERS.keys()))
     parser.add_argument("--filename", default="api", type=str)
     return parser

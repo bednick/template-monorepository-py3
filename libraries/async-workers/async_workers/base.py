@@ -19,8 +19,6 @@ logger = logging.getLogger(__name__)
 
 
 class TaskReaderSettings(pydantic_settings.BaseSettings):
-    model_config = pydantic.ConfigDict(populate_by_name=True)
-
     run_once: bool = pydantic.Field(False, validation_alias="TASK_READER_RUN_ONCE")
     sleep_seconds: float = pydantic.Field(0.1, validation_alias="TASK_READER_SLEEP_SECONDS")
 
@@ -79,8 +77,6 @@ class TaskReader(Generic[TaskReaderSettingsObj, TaskObj], metaclass=abc.ABCMeta)
 
 
 class BaseHandlerSettings(pydantic_settings.BaseSettings):
-    model_config = pydantic.ConfigDict(populate_by_name=True)
-
     task_max_time_seconds: float = pydantic.Field(15 * 60, validation_alias="WORKER_TASK_MAX_TIME_SECONDS")
     max_restarts: Optional[int] = pydantic.Field(None, validation_alias="WORKER_MAX_RESTARTS")
     restart_time_seconds: float = pydantic.Field(30, validation_alias="WORKER_RESTART_TIME_SECONDS")

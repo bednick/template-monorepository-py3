@@ -1,0 +1,25 @@
+openapi: 3.1.0
+info:
+  title: {{ project_name }}
+  version: latest
+paths:
+  /ping:
+    get:
+      summary: Ping
+      operationId: ping
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /:
+    get:
+      summary: Root
+      operationId: root
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}

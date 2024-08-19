@@ -8,8 +8,6 @@ import pydantic_settings
 class Settings(pydantic_settings.BaseSettings):
     """All trace settings"""
 
-    model_config = pydantic.ConfigDict(populate_by_name=True)
-
     exporter: Optional[Literal["ConsoleSpanExporter"]] = pydantic.Field(None, validation_alias="TRACE_EXPORTER")
     processor: Literal["SimpleSpanProcessor", "BatchSpanProcessor"] = pydantic.Field(
         "BatchSpanProcessor", validation_alias="TRACE_PROCESSOR"

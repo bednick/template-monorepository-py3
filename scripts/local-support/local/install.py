@@ -1,8 +1,8 @@
 """
-kpss.install -l
-kpss.install -s
-kpss.install -ls
-kpss.install --libraries --services
+local.install -l
+local.install -s
+local.install -ls
+local.install --libraries --services
 """
 
 import argparse

@@ -1,7 +1,7 @@
 ﻿# RUN BULD ONLY ROOT PROJECT!!!
 # docker build -t example-service -f ./services/example-service/Dockerfile .
 
-FROM python:3.9-bookworm AS builder
+FROM python:3.11.9-slim AS app
 
 WORKDIR /usr/src
 
@@ -19,4 +19,4 @@ WORKDIR /usr/app
 
 COPY ./scripts/internal /usr/app/scripts
 
-ENTRYPOINT ["uvicorn", "example_service.application:app", "--host", "0.0.0.0", "--port", "8080", "--no-access-log"]
+ENTRYPOINT ["uvicorn", "example_service.asgi:app", "--host", "0.0.0.0", "--port", "8080", "--no-access-log", "--proxy-headers"]

@@ -10,8 +10,6 @@ logger = logging.getLogger(__name__)
 
 
 class SslSettings(pydantic_settings.BaseSettings):
-    model_config = pydantic.ConfigDict(populate_by_name=True)
-
     is_use: bool = pydantic.Field(True, validation_alias="RABBITMQ_SSL")
     cacerts: Optional[str] = pydantic.Field(None, validation_alias="RABBITMQ_SSL_CAFILE", min_length=1)
     certfile: str = pydantic.Field(..., validation_alias="RABBITMQ_SSL_CERTFILE", min_length=1)
@@ -48,12 +46,10 @@ class SslSettings(pydantic_settings.BaseSettings):
 
 
 class Settings(pydantic_settings.BaseSettings):
-    model_config = pydantic.ConfigDict(populate_by_name=True)
-
-    host: str = pydantic.Field(..., validation_alias="RABBITMQ_HOST")
+    host: str = pydantic.Field("localhost", validation_alias="RABBITMQ_HOST")
     port: int = pydantic.Field(5672, validation_alias="RABBITMQ_PORT")
-    login: Optional[str] = pydantic.Field(None, validation_alias="RABBITMQ_LOGIN")
-    password: Optional[str] = pydantic.Field(None, validation_alias="RABBITMQ_PASSWORD")
+    login: Optional[str] = pydantic.Field("guest", validation_alias="RABBITMQ_LOGIN")
+    password: Optional[str] = pydantic.Field("guest", validation_alias="RABBITMQ_PASSWORD")
     queue: Optional[str] = pydantic.Field(None, validation_alias="RABBITMQ_QUEUE")
     service_name: str = pydantic.Field("async_rabbitmq")
 

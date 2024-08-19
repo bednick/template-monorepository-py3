@@ -17,7 +17,7 @@ line_length = 119
 [tool.mypy]
 python_version = "3.11"
 warn_unused_configs = true
-files = ["libraries", "scripts", "services"]
+files = [ "libraries", "scripts", "services",]
 exclude = [ "setup\\.py$",]
 ignore_missing_imports = true
 strict_optional = true
@@ -29,7 +29,7 @@ minversion = "7.1"
 faulthandler_timeout = 5
 junit_logging = "all"
 addopts = "-ra -q"
-pythonpath = [ "libraries/async-database-postgresql", "libraries/async-rabbitmq", "libraries/async-utils", "libraries/async-workers", "libraries/async-workers-cron", "libraries/async-workers-rabbit", "libraries/logging-settings", "libraries/trace-settings",]
+pythonpath = [ "libraries/async-database-postgresql", "libraries/async-rabbitmq", "libraries/async-utils", "libraries/async-workers", "libraries/async-workers-cron", "libraries/async-workers-rabbit", "libraries/fastapi-settings", "libraries/logging-settings", "libraries/trace-settings",]
 required_plugins = [ "pytest-asyncio==0.23.6", "pytest-mock==3.12.0",]
 testpaths = [ "libraries", "services",]
 filterwarnings = [ "ignore::DeprecationWarning",]

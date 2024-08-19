@@ -2,19 +2,18 @@ from typing import Optional
 
 import dotenv
 import pydantic
-import pydantic_settings
 
-import logging_settings
-import trace_settings
+import fastapi_settings
+
+from example_service import database as database_
 
 
-class Settings(pydantic_settings.BaseSettings):
+class Settings(fastapi_settings.config.Settings):
     """All service settings"""
 
-    model_config = pydantic.ConfigDict(populate_by_name=True)
+    project_name: str = pydantic.Field("example-service", validation_alias="PROJECT_NAME")
 
-    logging: logging_settings.config.Settings = pydantic.Field(default_factory=logging_settings.config.Settings)
-    trace: trace_settings.config.Settings = pydantic.Field(default_factory=trace_settings.config.Settings)
+    database: database_.config.Settings = pydantic.Field(default_factory=database_.config.Settings)
 
 
 def get_settings(settings: Optional[Settings] = None, *, load_dotenv: bool = False, **kwargs) -> Settings:

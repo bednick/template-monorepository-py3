@@ -19,7 +19,7 @@ from local import utils
 
 def run(gen_type: Literal["libraries", "services"], project_name: str, type_: str) -> bool:
     try:
-        new_dir = gen_module(project_name, gen_type, f"library/{type_}")
+        new_dir = gen_module(project_name, gen_type, f"{gen_type}/{type_}")
         if gen_type == "libraries":
             update_pyproject(new_dir)
     except Exception as exc:
@@ -47,6 +47,9 @@ def gen_module(project_name: str, module_type: str, template_type: str) -> pathl
     new_dir.mkdir(parents=True)
 
     for path, subdirs, files in os.walk(template_root):
+        print("path", path)
+        print("subdirs", subdirs)
+        print("files", files)
         relpath = os.path.relpath(path, start=template_root)
         for subdir in subdirs:
             new_subdir_absolute = str((new_dir / relpath / subdir).absolute())

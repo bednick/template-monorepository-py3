@@ -1,0 +1,42 @@
+# docker compose --project-directory ./ -f ./services/example-service/docker-compose.yml up
+
+services:
+  example-worker:
+    image: example-service
+    build:
+      context: .
+      dockerfile: ./services/example-service/Dockerfile
+    environment:
+      - DATABASE_POSTGRESQL_HOST=postgres
+      - DATABASE_POSTGRESQL_USERNAME=postgres
+      - DATABASE_POSTGRESQL_PASSWORD=postgres
+      - DATABASE_POSTGRESQL_DATABASE_NAME=postgres
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_LOGIN=guest
+      - RABBITMQ_PASSWORD=guest
+      - RABBITMQ_QUEUE=demo
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres
+      - rabbitmq
+  postgres:
+    image: postgres:16.2-bookworm
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+  rabbitmq:
+    image: rabbitmq:3.10.7-management
+    hostname: rabbitmq
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    volumes:
+      - ./services/example-service/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:r
+      - ./services/example-service/rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+    ports:
+      - 5672:5672
+      - 15672:15672

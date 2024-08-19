@@ -7,11 +7,12 @@ import pydantic_settings
 
 logger = logging.getLogger(__name__)
 
+Formatter = Literal["default", "json"]
+
 
 class FileSettings(pydantic_settings.BaseSettings):
-    model_config = pydantic.ConfigDict(populate_by_name=True)
-
     is_use: bool = pydantic.Field(True, validation_alias="LOGGING_FILE")
+    formatter: Formatter = pydantic.Field("json", validation_alias="LOGGING_FILE_FORMATTER")
     filename: str = pydantic.Field(..., validation_alias="LOGGING_FILE_PATH", min_length=1)
     format: str = pydantic.Field(
         "%(process)d %(threadName)s %(taskName)s %(levelname) %(name)s %(funcName)s %(lineno)d %(message)s",
@@ -34,9 +35,8 @@ class FileSettings(pydantic_settings.BaseSettings):
 class Settings(pydantic_settings.BaseSettings):
     """All logging settings"""
 
-    model_config = pydantic.ConfigDict(populate_by_name=True)
-
     level: int = pydantic.Field(logging.INFO, validation_alias="LOGGING_LEVEL")
+    formatter: Formatter = pydantic.Field("default", validation_alias="LOGGING_FORMATTER")
     stream: Literal["stderr", "stdout"] = pydantic.Field("stderr", validation_alias="LOGGING_STREAM")
     format: str = pydantic.Field(
         "%(asctime)s %(levelname)-7s %(name)s.%(funcName)s:%(lineno)d %(message)s", validation_alias="LOGGING_FORMAT"

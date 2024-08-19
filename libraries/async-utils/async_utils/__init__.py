@@ -15,6 +15,7 @@ from typing import (
     Generator,
     List,
     Optional,
+    ParamSpec,
     Set,
     Tuple,
     Type,
@@ -24,9 +25,9 @@ from typing import (
 
 logger = logging.getLogger(__name__)
 
-# TODO: add description of input parameters
+Param = ParamSpec("Param")
 ReturnType = TypeVar("ReturnType")
-AsyncFunc = Callable[..., Awaitable[ReturnType]]
+AsyncFunc = Callable[Param, Awaitable[ReturnType]]
 
 
 def async_retry(
@@ -35,9 +36,9 @@ def async_retry(
 ) -> Callable[[AsyncFunc], AsyncFunc]:
     """Retry async function use decorator"""
 
-    def retry_wrapper(func: AsyncFunc) -> AsyncFunc:
+    def decorator(func: AsyncFunc) -> AsyncFunc:
         @functools.wraps(func)
-        async def wrapper(*args, **kwargs) -> ReturnType:
+        async def wrapper(*args: Param.args, **kwargs: Param.kwargs) -> ReturnType:
             for retry_index in range(len(retry_sleeps) + 1):
                 try:
                     return await func(*args, **kwargs)
@@ -56,7 +57,7 @@ def async_retry(
 
         return wrapper
 
-    return retry_wrapper
+    return decorator
 
 
 async def run_with_semaphore(future: Coroutine[Any, Any, ReturnType], semaphore: asyncio.Semaphore) -> ReturnType:

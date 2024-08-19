@@ -10,7 +10,7 @@
 Для разработки предлагается придерживаться следующих правил:
 - На весь проект используется одно виртуальное окружение в директории `.venv`:
   ```commandline
-  pip install -r constraints.txt -r constraints-dev.txt
+  pip install -r constraints.txt
   ```
 - Создавать новые библиотеки и сервисы используя кодогенератор: (подробнее в файле `./scripts/local-support/README.md`)
   ```commandline

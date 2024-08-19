@@ -1,26 +1,34 @@
+import contextlib
 import logging
-from typing import Any, Dict
+from typing import AsyncIterator, cast
 
-from example_service import config
+import fastapi
+
+import async_workers
+
+from example_service import config, database, workers
 
 logger = logging.getLogger(__name__)
 
-DEPENDENCIES: Dict[str, Any] = {}
+
+@contextlib.asynccontextmanager
+async def lifespan(app: fastapi.FastAPI, settings: config.Settings) -> AsyncIterator[None]:
+    app.state.settings = settings  # noqa
+
+    dependencies = {
+        "storage": database.storage.Storage.from_settings(settings.database),
+    }
+    async with contextlib.AsyncExitStack() as stack:
+        for name, dependency in dependencies.items():
+            await stack.enter_async_context(dependency)
+            setattr(app.state, name, dependency)  # noqa
+        await stack.enter_async_context(async_workers.WorkersLifespan(workers, **dependencies))
+        yield
 
 
-async def initialize(settings_: config.Settings):
-    pass
+def get_settings(request: fastapi.Request) -> config.Settings:
+    return cast(config.Settings, request.app.state.settings)
 
 
-async def close():
-    for name, dependence in DEPENDENCIES.items():
-        if hasattr(dependence, "__aexit__"):
-            try:
-                await dependence.__aexit__(None, None, None)
-            except Exception as exc:
-                logger.warning(f"Error execute {name}.__aexit__: {exc}")
-        elif hasattr(dependence, "__exit__"):
-            try:
-                await dependence.__exit__(None, None, None)
-            except Exception as exc:
-                logger.warning(f"Error execute {name}.__exit__: {exc}")
+def get_storage(request: fastapi.Request) -> database.storage.Storage:
+    return cast(database.storage.Storage, request.app.state.storage)

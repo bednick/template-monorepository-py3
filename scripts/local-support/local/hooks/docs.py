@@ -16,7 +16,7 @@ def run(updated_files: List[str], format_: str, filename: str) -> bool:
         try:
             new_docs_filename = docs.run(
                 project_name=project_name,
-                app_template="{module_name}.routers:app",
+                app_template="{module_name}.asgi:app",
                 format_=format_,
                 filename=filename,
             )
