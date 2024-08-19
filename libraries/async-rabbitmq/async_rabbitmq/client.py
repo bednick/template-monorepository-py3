@@ -2,7 +2,7 @@ import datetime
 import json
 import logging
 import ssl
-from typing import Any, AsyncGenerator, Dict, NamedTuple, Optional, Union
+from typing import Any, AsyncGenerator, Dict, NamedTuple, Optional
 
 import aio_pika
 import jsons
@@ -67,14 +67,13 @@ class Client:
     def serialize(cls, value: object, encoding: str = "utf-8") -> bytes:
         if value is None:
             raise ValueError("Cannot serialize None value")
-        data: Union[str, bytes]
         if hasattr(value, "dumps") and callable(value.dumps):
-            data = value.dumps()  # jsons dataclasses
-        elif hasattr(value, "json") and callable(value.json):
-            data = value.json(by_alias=True, ensure_ascii=False)  # json pydantic
+            data: str = value.dumps()
+        elif hasattr(value, "model_dump_json") and callable(value.model_dump_json):
+            data = value.model_dump_json(by_alias=True)
         else:
-            data = jsons.dumps(value, jdkwargs={"ensure_ascii": False})  # штатная дефолтовая сериализация
-        return data.encode(encoding) if isinstance(data, str) else data
+            data = jsons.dumps(value, jdkwargs={"ensure_ascii": False})
+        return data.encode(encoding)
 
     async def send(
         self,
