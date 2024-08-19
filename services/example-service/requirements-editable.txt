@@ -1,5 +1,3 @@
 async-database-postgresql
 async-workers
 fastapi-settings
-logging-settings
-trace-settings

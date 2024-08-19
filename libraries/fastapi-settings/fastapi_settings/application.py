@@ -8,6 +8,9 @@ import starlette.middleware.cors
 import starlette_exporter
 from starlette.types import Lifespan
 
+import logging_settings
+import trace_settings
+
 from fastapi_settings import config
 
 logger = logging.getLogger(__name__)
@@ -72,3 +75,8 @@ def get_application(
         return await fastapi.exception_handlers.request_validation_exception_handler(request, exc)
 
     return application
+
+
+def basic_config(settings: config.Settings) -> None:
+    logging_settings.basic_config(settings.logging)
+    trace_settings.basic_config(settings.trace)
