@@ -3,6 +3,7 @@ import logging
 import fastapi
 import fastapi.exception_handlers
 import fastapi.routing
+import opentelemetry.instrumentation.fastapi
 import starlette.exceptions
 import starlette.middleware.cors
 import starlette_exporter
@@ -27,15 +28,13 @@ def get_application(
         version=settings.version,
         lifespan=lifespan,
     )
-    application.include_router(router)
+    opentelemetry.instrumentation.fastapi.FastAPIInstrumentor.instrument_app(application)
     application.add_middleware(
         starlette_exporter.PrometheusMiddleware,  # noqa
         app_name=settings.project_name,
         prefix=settings.project_name.replace("-", "_"),
         buckets=[0.1, 0.25, 0.5, 1.0, 10.0],
     )
-    application.add_route("/metrics", starlette_exporter.handle_metrics)
-
     application.add_middleware(
         starlette.middleware.cors.CORSMiddleware,  # noqa
         allow_origins=settings.allowed_hosts,
@@ -43,6 +42,9 @@ def get_application(
         allow_methods=("*",),
         allow_headers=("*",),
     )
+
+    application.include_router(router)
+    application.add_route("/metrics", starlette_exporter.handle_metrics)
 
     @application.middleware("http")
     async def generic_exception_handler(request: fastapi.Request, call_next) -> fastapi.responses.JSONResponse:

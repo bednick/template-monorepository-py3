@@ -8,17 +8,17 @@ import traceback
 from typing import Any, AsyncIterator, Callable, Generic, Optional, Type, TypeVar
 
 import pydantic
-import pydantic_settings
 from opentelemetry import propagate, trace
 from prometheus_client import Counter, Gauge, Histogram
 
 import async_utils
+import pydantic_base_settings
 
 tracer = trace.get_tracer(__name__)
 logger = logging.getLogger(__name__)
 
 
-class TaskReaderSettings(pydantic_settings.BaseSettings):
+class TaskReaderSettings(pydantic_base_settings.BaseSettings):
     run_once: bool = pydantic.Field(False, validation_alias="TASK_READER_RUN_ONCE")
     sleep_seconds: float = pydantic.Field(0.1, validation_alias="TASK_READER_SLEEP_SECONDS")
 
@@ -76,7 +76,7 @@ class TaskReader(Generic[TaskReaderSettingsObj, TaskObj], metaclass=abc.ABCMeta)
                 break
 
 
-class BaseHandlerSettings(pydantic_settings.BaseSettings):
+class BaseHandlerSettings(pydantic_base_settings.BaseSettings):
     task_max_time_seconds: float = pydantic.Field(15 * 60, validation_alias="WORKER_TASK_MAX_TIME_SECONDS")
     max_restarts: Optional[int] = pydantic.Field(None, validation_alias="WORKER_MAX_RESTARTS")
     restart_time_seconds: float = pydantic.Field(30, validation_alias="WORKER_RESTART_TIME_SECONDS")
@@ -167,21 +167,15 @@ class TaskHandler(Generic[BaseHandlerSettingsObj, TaskReaderObj, TaskObj], metac
         """Start reading and processing cycle"""
         async with self.task_reader:
             async for task in self.task_reader.receive():
-                start = time.time()
-                try:
-                    logger.info(f"Start process task {self.worker_name=} {task.task_id=}")
-                    await self.process_task(task)
-                finally:
-                    work_time = time.time() - start
-                    TASK_HANDLERS_TASK_GAUGE.labels(self.worker_name).inc(work_time)
-                    TASK_HANDLERS_TASK_HISTOGRAM.labels(self.worker_name).observe(work_time)
-                    logger.info(f"Processed task {self.worker_name=} {task.task_id=} work_time={round(work_time, 3)}")
+                await self.process_task(task)
 
     async def process_task(self, task: TaskObj) -> Any:
         timeout = self.settings.task_max_time_seconds
         with tracer.start_as_current_span(
             self.worker_name, context=propagate.extract({"traceparent": task.traceparent})
         ):
+            logger.info(f"Start process_task worker_name={self.worker_name} {task.task_id=}")
+            start = time.time()
             try:
                 TASK_HANDLERS_TASK_COUNTER.labels(self.worker_name, "process").inc()
                 if timeout:
@@ -204,6 +198,11 @@ class TaskHandler(Generic[BaseHandlerSettingsObj, TaskReaderObj, TaskObj], metac
                 await self.task_reader.error(
                     task, error_message, "".join(traceback.format_tb(exc.__traceback__)) + str(exc)
                 )
+            finally:
+                work_time = time.time() - start
+                TASK_HANDLERS_TASK_GAUGE.labels(self.worker_name).inc(work_time)
+                TASK_HANDLERS_TASK_HISTOGRAM.labels(self.worker_name).observe(work_time)
+                logger.info(f"Processed task {self.worker_name=} {task.task_id=} work_time={round(work_time, 3)}")
 
     @abc.abstractmethod
     async def _process_task(self, task: TaskObj): ...

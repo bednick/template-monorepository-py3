@@ -2,13 +2,13 @@ from typing import Optional, Tuple
 
 import dotenv
 import pydantic
-import pydantic_settings
 
 import logging_settings
+import pydantic_base_settings
 import trace_settings
 
 
-class Settings(pydantic_settings.BaseSettings):
+class Settings(pydantic_base_settings.BaseSettings):
     """All service settings"""
 
     project_name: str = pydantic.Field(..., validation_alias="PROJECT_NAME")

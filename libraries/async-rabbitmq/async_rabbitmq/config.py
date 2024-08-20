@@ -3,13 +3,14 @@ import ssl
 from typing import Any, Dict, Optional
 
 import pydantic
-import pydantic_settings
 import yarl
+
+import pydantic_base_settings
 
 logger = logging.getLogger(__name__)
 
 
-class SslSettings(pydantic_settings.BaseSettings):
+class SslSettings(pydantic_base_settings.BaseSettings):
     is_use: bool = pydantic.Field(True, validation_alias="RABBITMQ_SSL")
     cacerts: Optional[str] = pydantic.Field(None, validation_alias="RABBITMQ_SSL_CAFILE", min_length=1)
     certfile: str = pydantic.Field(..., validation_alias="RABBITMQ_SSL_CERTFILE", min_length=1)
@@ -18,14 +19,6 @@ class SslSettings(pydantic_settings.BaseSettings):
 
     def __bool__(self) -> bool:
         return self.is_use
-
-    @classmethod
-    def read(cls) -> Optional["SslSettings"]:
-        try:
-            return cls()
-        except pydantic.ValidationError as exc:
-            logger.debug(f"Not load {cls.__name__}", exc_info=exc)
-            return None
 
     @property
     def ssl_context(self) -> ssl.SSLContext:
@@ -45,7 +38,7 @@ class SslSettings(pydantic_settings.BaseSettings):
         return context
 
 
-class Settings(pydantic_settings.BaseSettings):
+class Settings(pydantic_base_settings.BaseSettings):
     host: str = pydantic.Field("localhost", validation_alias="RABBITMQ_HOST")
     port: int = pydantic.Field(5672, validation_alias="RABBITMQ_PORT")
     login: Optional[str] = pydantic.Field("guest", validation_alias="RABBITMQ_LOGIN")

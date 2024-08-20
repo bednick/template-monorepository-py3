@@ -2,10 +2,11 @@ from typing import Literal, Optional
 
 import dotenv
 import pydantic
-import pydantic_settings
+
+import pydantic_base_settings
 
 
-class Settings(pydantic_settings.BaseSettings):
+class Settings(pydantic_base_settings.BaseSettings):
     """All trace settings"""
 
     exporter: Optional[Literal["ConsoleSpanExporter"]] = pydantic.Field(None, validation_alias="TRACE_EXPORTER")

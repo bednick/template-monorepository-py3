@@ -1,2 +1,3 @@
 logging-settings
+pydantic-base-settings
 trace-settings

@@ -3,12 +3,13 @@ import ssl
 from typing import Literal, Optional
 
 import pydantic
-import pydantic_settings
+
+import pydantic_base_settings
 
 logger = logging.getLogger(__name__)
 
 
-class SettingsSSL(pydantic_settings.BaseSettings):
+class SettingsSSL(pydantic_base_settings.BaseSettings):
     is_use: bool = pydantic.Field(True, validation_alias="DATABASE_POSTGRESQL_SSL")
     cafile: Optional[str] = pydantic.Field(None, validation_alias="DATABASE_POSTGRESQL_SSL_CAFILE")
     certfile: str = pydantic.Field(..., validation_alias="DATABASE_POSTGRESQL_SSL_CERTFILE")
@@ -19,14 +20,6 @@ class SettingsSSL(pydantic_settings.BaseSettings):
     def __bool__(self) -> bool:
         return self.is_use
 
-    @classmethod
-    def read(cls) -> Optional["SettingsSSL"]:
-        try:
-            return cls()
-        except pydantic.ValidationError as exc:
-            logger.debug(f"Not load {cls.__name__}", exc_info=exc)
-        return None
-
     @property
     def ssl_context(self) -> ssl.SSLContext:
         sslctx = ssl.create_default_context(ssl.Purpose.SERVER_AUTH, cafile=self.cafile)  # noqa
@@ -35,7 +28,7 @@ class SettingsSSL(pydantic_settings.BaseSettings):
         return sslctx
 
 
-class Settings(pydantic_settings.BaseSettings):
+class Settings(pydantic_base_settings.BaseSettings):
     host: str = pydantic.Field("localhost", validation_alias="DATABASE_POSTGRESQL_HOST")
     port: int = pydantic.Field(5432, validation_alias="DATABASE_POSTGRESQL_PORT")
     username: str = pydantic.Field("postgres", validation_alias="DATABASE_POSTGRESQL_USERNAME")

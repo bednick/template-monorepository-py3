@@ -1,2 +1,3 @@
 async-rabbitmq
 async-utils
+pydantic-base-settings
