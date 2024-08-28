@@ -4,7 +4,7 @@ import logging
 import fastapi.exception_handlers
 import urllib3.exceptions
 
-import fastapi_settings
+import service_settings
 
 from {{ module_name }} import api, config, dependencies
 
@@ -15,9 +15,9 @@ logger = logging.getLogger(__name__)
 
 def get_application(settings: config.Settings | None = None) -> fastapi.FastAPI:
     if settings is None:
-        settings = config.get_settings(load_dotenv=True)
-        fastapi_settings.basic_config(settings)
-    return fastapi_settings.get_application(
+        settings = config.get_settings()
+        service_settings.basic_config(settings)
+    return service_settings.get_application(
         settings=settings,
         router=api.router,
         lifespan=functools.partial(dependencies.lifespan, settings=settings),

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.black]
 line-length = 119
-target-version = [ "py39",]
+target-version = [ "py311",]
 include = "\\.pyi?$"
 exclude = "/( \\.git | \\.hg | \\.mypy_cache | \\.tox| \\.venv | _build | buck-out | build | dist)/"
 
@@ -29,7 +29,7 @@ minversion = "7.1"
 faulthandler_timeout = 5
 junit_logging = "all"
 addopts = "-ra -q"
-pythonpath = [ "libraries/async-database-postgresql", "libraries/async-rabbitmq", "libraries/async-utils", "libraries/async-workers", "libraries/async-workers-cron", "libraries/async-workers-rabbit", "libraries/fastapi-settings", "libraries/logging-settings", "libraries/pydantic-base-settings", "libraries/trace-settings",]
+pythonpath = [ "libraries/async-database-postgresql", "libraries/async-rabbitmq", "libraries/async-utils", "libraries/async-workers", "libraries/logging-settings", "libraries/pydantic-base-settings", "libraries/service-settings", "libraries/trace-settings",]
 required_plugins = [ "pytest-asyncio==0.23.6", "pytest-mock==3.12.0",]
 testpaths = [ "libraries", "services",]
 filterwarnings = [ "ignore::DeprecationWarning",]

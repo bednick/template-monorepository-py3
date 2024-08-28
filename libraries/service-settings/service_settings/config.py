@@ -1,6 +1,5 @@
 from typing import Optional, Tuple
 
-import dotenv
 import pydantic
 
 import logging_settings
@@ -22,10 +21,8 @@ class Settings(pydantic_base_settings.BaseSettings):
     trace: trace_settings.config.Settings = pydantic.Field(default_factory=trace_settings.config.Settings)
 
 
-def get_settings(settings: Optional[Settings] = None, *, load_dotenv: bool = False, **kwargs) -> Settings:
+def get_settings(settings: Optional[Settings] = None, **kwargs) -> Settings:
     if settings:
         assert isinstance(settings, Settings)
         return settings
-    if load_dotenv:
-        dotenv.load_dotenv(dotenv.find_dotenv(usecwd=True))
     return Settings(**kwargs)

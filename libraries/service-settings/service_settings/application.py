@@ -12,7 +12,7 @@ from starlette.types import Lifespan
 import logging_settings
 import trace_settings
 
-from fastapi_settings import config
+from service_settings import config
 
 logger = logging.getLogger(__name__)
 

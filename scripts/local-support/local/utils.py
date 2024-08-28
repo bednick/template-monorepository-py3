@@ -16,19 +16,19 @@ def parse_requirements(filename: pathlib.Path) -> Set[str]:
     return results
 
 
-def cmd(command: List[str], quiet: bool = False) -> int:
-    print(" ".join(command))
+def cmd(command: List[str], print_command: bool = True) -> int:
+    if print_command:
+        print(" ".join(command))
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
-    if not quiet:
-        print(stderr.decode(), file=sys.stderr)
-        print(stdout.decode())
-    if process.returncode and quiet:
-        print(stderr.decode(), file=sys.stderr)
+    print(stderr.decode(), file=sys.stderr)
+    print(stdout.decode())
     return process.returncode
 
 
 def clear_project_name(project_name: str) -> str:
+    if not project_name:
+        return ""
     chars = []
     last_delimiter = True
     for char in re.sub(r"([A-Z])", r" \1", project_name).lower():
