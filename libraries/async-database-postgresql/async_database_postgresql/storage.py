@@ -1,10 +1,10 @@
 import functools
 import json
 import logging
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional, Sequence, Union
 
 import pydantic.json
-from sqlalchemy import Executable, Result, text
+from sqlalchemy import Executable, Result, ScalarResult, text
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
@@ -81,11 +81,41 @@ class Storage:
     @with_session
     async def execute(
         self,
-        statement: Union[Executable, str],
+        stmt: Union[Executable, str],
         parameters: Optional[Dict[str, Any]] = None,
         *,
         session: AsyncSession = ...,
     ) -> Result[Any]:
-        if isinstance(statement, str):
-            statement = text(statement)
-        return await session.execute(statement, parameters)
+        if isinstance(stmt, str):
+            stmt = text(stmt)
+        return await session.execute(stmt, parameters)
+
+    @with_session
+    async def scalars(
+        self,
+        stmt: Executable,
+        parameters: Optional[Dict[str, Any]] = None,
+        *,
+        session: AsyncSession = ...,
+    ) -> ScalarResult[Any]:
+        return (await session.execute(stmt, parameters)).scalars()
+
+    @with_session
+    async def first(
+        self,
+        stmt: Executable,
+        parameters: Optional[Dict[str, Any]] = None,
+        *,
+        session: AsyncSession = ...,
+    ) -> Any | None:
+        return (await session.execute(stmt, parameters)).scalars().first()
+
+    @with_session
+    async def all(
+        self,
+        stmt: Executable,
+        parameters: Optional[Dict[str, Any]] = None,
+        *,
+        session: AsyncSession = ...,
+    ) -> Sequence[Any]:
+        return (await session.execute(stmt, parameters)).scalars().all()
