@@ -68,12 +68,12 @@ class Client:
         if value is None:
             raise ValueError("Cannot serialize None value")
         if hasattr(value, "dumps") and callable(value.dumps):
-            data: str = value.dumps()
+            data: str | bytes = value.dumps()
         elif hasattr(value, "model_dump_json") and callable(value.model_dump_json):
             data = value.model_dump_json(by_alias=True)
         else:
             data = jsons.dumps(value, jdkwargs={"ensure_ascii": False})
-        return data.encode(encoding)
+        return data if isinstance(data, bytes) else data.encode(encoding)
 
     async def send(
         self,

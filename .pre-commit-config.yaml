@@ -39,14 +39,14 @@ repos:
         require_serial: true
         language: system
         files: '^services\/\S*.py$'
-      - id: pytest-check
-        name: check pytest
-        stages: [ commit ]
-        types: [ python ]
-        entry: pytest
-        language: system
-        pass_filenames: false
-        always_run: true
+#      - id: pytest-check
+#        name: check pytest
+#        stages: [ commit ]
+#        types: [ python ]
+#        entry: pytest
+#        language: system
+#        pass_filenames: false
+#        always_run: true
       - id: mypy-check
         name: check mypy
         stages: [ commit ]

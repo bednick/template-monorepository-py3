@@ -1,7 +1,7 @@
 """
 local.gen -l logging-settings
 
-local.gen -s example-workers
+local.gen -s example-service
 local.gen -s --type fastapi example-service
 """
 

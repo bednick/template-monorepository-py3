@@ -15,8 +15,8 @@ from example_service import application, config, database
 def settings() -> config.Settings:
     return config.Settings(
         database=database.config.Settings(
-            DATABASE_POSTGRESQL_DATABASE_NAME="example-service-tests",
-            DATABASE_POSTGRESQL_POOL_SIZE=-1,
+            database_name="example-service-tests",
+            pool_size=-1,
         ),
     )
 

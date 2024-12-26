@@ -1,6 +1,5 @@
 """
 local.docs example-service
-local.docs example-service example-workers
 local.docs __all__
 """
 

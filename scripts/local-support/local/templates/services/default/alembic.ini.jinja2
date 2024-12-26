@@ -1,10 +1,4 @@
 [alembic]
 script_location = {{ module_name }}:../migrations
-file_template = %%(rev)s_%%(slug)s
+file_template = %%(rev)s
 revision_environment = true
-
-[post_write_hooks]
-hooks=black
-black.type=console_scripts
-black.entrypoint=black
-black.options=--line-length 119 --skip-string-normalization
